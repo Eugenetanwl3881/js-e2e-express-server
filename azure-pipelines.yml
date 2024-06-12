@@ -9,11 +9,11 @@ trigger:
 pool: Self-hosted
 
 steps:
-- script: |
+- powershell: |
     git clone https://github.com/github/codeql-action.git
     cd codeql-action
-    ./init
-    ./analyze
+    .\init.ps1
+    .\analyze.ps1
   displayName: 'Run CodeQL analysis'
 - task: UseNode@1
   inputs:
