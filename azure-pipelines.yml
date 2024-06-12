@@ -12,8 +12,8 @@ steps:
 - powershell: |
     git clone https://github.com/github/codeql-action.git
     cd codeql-action
-    .\init.ps1
-    .\analyze.ps1
+    ./init
+    ./analyze
   displayName: 'Run CodeQL analysis'
 - task: UseNode@1
   inputs:
