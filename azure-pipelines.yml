@@ -11,8 +11,9 @@ pool: Self-hosted
 steps:
 - script: |
     git clone https://github.com/github/codeql-action.git
-    ./codeql-action/init
-    ./codeql-action/analyze
+    cd codeql-action
+    ./init
+    ./analyze
   displayName: 'Run CodeQL analysis'
 - task: UseNode@1
   inputs:
