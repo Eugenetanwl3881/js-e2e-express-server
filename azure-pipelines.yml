@@ -10,11 +10,22 @@ pool: Self-hosted
 
 steps:
 - powershell: |
+    Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process -Force
+    Invoke-WebRequest -Uri https://github.com/github/codeql-cli-binaries/releases/download/v2.9.2/codeql.zip -OutFile codeql.zip
+    Expand-Archive -Path codeql.zip -DestinationPath codeql
+    $env:PATH += ";$(pwd)\codeql"
     git clone https://github.com/github/codeql-action.git
-    cd codeql-action
-    ./init
-    ./analyze
-  displayName: 'Run CodeQL analysis'
+    .\codeql-action\init.ps1
+    .\codeql\codeql.exe database create codeql-db --language=javascript --source-root=.
+    .\codeql\codeql.exe database analyze codeql-db --format=sarif-latest --output=codeql-analysis.sarif
+  displayName: 'Run CodeQL Analysis'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: '$(Build.SourcesDirectory)\codeql-analysis.sarif'
+    artifactName: 'CodeQLAnalysisResults'
+    publishLocation: 'Container'
+  displayName: 'Publish CodeQL Analysis Results'
 - task: UseNode@1
   inputs:
     version: '16.x'
