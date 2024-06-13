@@ -9,23 +9,24 @@ trigger:
 pool: Self-hosted
 
 steps:
-- powershell: |
-    Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process -Force
-    Invoke-WebRequest -Uri https://github.com/github/codeql-cli-binaries/releases/download/v2.9.2/codeql.zip -OutFile codeql.zip
-    Expand-Archive -Path codeql.zip -DestinationPath codeql
-    $env:PATH += ";$(pwd)\codeql"
-    git clone https://github.com/github/codeql-action.git
-    .\codeql-action\init.ps1
-    .\codeql\codeql.exe database create codeql-db --language=javascript --source-root=.
-    .\codeql\codeql.exe database analyze codeql-db --format=sarif-latest --output=codeql-analysis.sarif
-  displayName: 'Run CodeQL Analysis'
-
-- task: PublishBuildArtifacts@1
+- task: PowerShell@2
+  displayName: 'Checkout codeql-anywhere'
   inputs:
-    pathtoPublish: '$(Build.SourcesDirectory)\codeql-analysis.sarif'
-    artifactName: 'CodeQLAnalysisResults'
-    publishLocation: 'Container'
-  displayName: 'Publish CodeQL Analysis Results'
+    targetType: inline
+    script: |
+      if (Test-Path './.git/modules/codeql-anywhere') {rm -rf './.git/modules/codeql-anywhere'}
+      git submodule add https://github.com/david-wiggs/codeql-anywhere.git
+    pwsh: true
+
+- task: PowerShell@2
+  displayName: 'Run New-CodeQLScan.ps1'
+  inputs:
+    targetType: filePath
+    filePath: 'codeql-anywhere/resources/scripts/New-CodeQLScan.ps1'
+    pwsh: true
+  env:
+    # GITHUB_TOKEN environment variable must be set to pass in the secret value defined in the $(GHAS_ADO) ADO pipeline variable
+    GITHUB_TOKEN: $(GHAS_ADO)
 - task: UseNode@1
   inputs:
     version: '16.x'
