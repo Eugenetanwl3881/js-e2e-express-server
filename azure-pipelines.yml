@@ -58,11 +58,12 @@ steps:
 
 
 - script: |
-    curl -H "Authorization: token $(GITHUB_TOKEN)" \
-         -H "Accept: application/vnd.github.v3+json" \
-         -H "Content-Type: application/json" \
-         --data @$(Build.SourcesDirectory)\codeql-analysis.sarif \
-         https://api.github.com/repos/$(GITHUB_OWNER)/$(GITHUB_REPO)/code-scanning/sarifs
+    curl -H "Authorization: token %GITHUB_TOKEN%" ^
+         -H "Accept: application/vnd.github.v3+json" ^
+         -H "Content-Type: application/json" ^
+         --data @%BUILD_SOURCESDIRECTORY%\codeql-analysis.sarif ^
+         https://api.github.com/repos/%GITHUB_OWNER%/%GITHUB_REPO%/code-scanning/sarifs
   displayName: 'Upload CodeQL Results to GitHub'
+  
   env:
     GITHUB_TOKEN: $(GITHUB_TOKEN)
