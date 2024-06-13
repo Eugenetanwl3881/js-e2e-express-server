@@ -24,9 +24,8 @@ steps:
 
 - powershell: |
     git clone https://github.com/github/codeql-action.git
-    .\codeql-action\init.ps1
-    codeql database create codeql-db --language=javascript --source-root=.
-    codeql database analyze codeql-db --format=sarif-latest --output=codeql-analysis.sarif
+    codeql database create codeql-db --language=javascript --source-root=$(Build.SourcesDirectory)
+    codeql database analyze codeql-db --format=sarif-latest --output=$(Build.SourcesDirectory)\codeql-analysis.sarif
   displayName: 'Run CodeQL Analysis'
 
 - task: CopyFiles@2
