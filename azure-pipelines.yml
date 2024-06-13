@@ -9,6 +9,10 @@ trigger:
 pool: Self-hosted
 
 steps:
+- script: |
+    echo %PATH%
+    where codeql
+  displayName: 'Debug PATH'
 - task: UseNode@1
   inputs:
     version: '16.x'
