@@ -9,10 +9,6 @@ trigger:
 pool: Self-hosted
 
 steps:
-- script: |
-    echo %PATH%
-    where codeql
-  displayName: 'Debug PATH'
 - task: UseNode@1
   inputs:
     version: '16.x'
@@ -29,6 +25,7 @@ steps:
 - script: |
     git clone https://github.com/github/codeql.git
     codeql database create codeql-db --language=javascript --source-root=$(Build.SourcesDirectory)
+    codeql database finalize codeql-db
     codeql database analyze codeql-db --format=sarif-latest --output=$(Build.SourcesDirectory)/codeql-analysis.sarif
   displayName: 'Run CodeQL Analysis'
 
