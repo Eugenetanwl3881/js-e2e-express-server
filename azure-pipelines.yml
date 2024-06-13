@@ -22,10 +22,10 @@ steps:
     npm run build
   displayName: 'npm build'
 
-- powershell: |
-    git clone https://github.com/github/codeql-action.git
+- script: |
+    git clone https://github.com/github/codeql.git
     codeql database create codeql-db --language=javascript --source-root=$(Build.SourcesDirectory)
-    codeql database analyze codeql-db --format=sarif-latest --output=$(Build.SourcesDirectory)\codeql-analysis.sarif
+    codeql database analyze codeql-db --format=sarif-latest --output=$(Build.SourcesDirectory)/codeql-analysis.sarif
   displayName: 'Run CodeQL Analysis'
 
 - task: CopyFiles@2
